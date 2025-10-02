@@ -14,8 +14,6 @@ This production-ready Ad Delivery Simulator implements the core components of a 
 - 🏗️ **Production-Ready**: Docker deployment, circuit breakers, graceful degradation
 - 🔧 **Built with Go**: Clean, maintainable codebase using industry-standard technologies
 
-Perfect for demonstrating expertise in ad tech infrastructure, distributed systems, and high-performance Go applications.
-
 ## Table of Contents
 
 - [Problem Context](#problem-context)
