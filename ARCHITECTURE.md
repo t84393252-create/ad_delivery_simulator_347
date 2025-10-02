@@ -56,17 +56,17 @@ graph TB
     AS --> R
     AS --> PG
     
-    style P fill:#e1f5fe
-    style A fill:#e1f5fe
-    style AN fill:#e1f5fe
-    style M fill:#e1f5fe
-    style AE fill:#fff3e0
-    style CS fill:#fff3e0
-    style TS fill:#fff3e0
-    style AS fill:#fff3e0
-    style R fill:#ffebee
-    style K fill:#f3e5f5
-    style PG fill:#e8f5e9
+    style P fill:#e1f5fe,color:#000
+    style A fill:#e1f5fe,color:#000
+    style AN fill:#e1f5fe,color:#000
+    style M fill:#e1f5fe,color:#000
+    style AE fill:#fff3e0,color:#000
+    style CS fill:#fff3e0,color:#000
+    style TS fill:#fff3e0,color:#000
+    style AS fill:#fff3e0,color:#000
+    style R fill:#ffebee,color:#000
+    style K fill:#f3e5f5,color:#000
+    style PG fill:#e8f5e9,color:#000
 ```
 
 ## 🔄 Bid Request Sequence Diagram
@@ -150,10 +150,10 @@ flowchart LR
     KQ --> AN
     KQ --> RP
     
-    style U fill:#e3f2fd
-    style RC fill:#ffebee
-    style KQ fill:#f3e5f5
-    style PG fill:#e8f5e9
+    style U fill:#e3f2fd,color:#000
+    style RC fill:#ffebee,color:#000
+    style KQ fill:#f3e5f5,color:#000
+    style PG fill:#e8f5e9,color:#000
 ```
 
 ## 💰 Campaign Lifecycle
@@ -247,9 +247,9 @@ graph TD
     RL --> CB
     CB --> RT
     
-    style L1 fill:#e8f5e9
-    style L2 fill:#fff3e0
-    style L3 fill:#ffebee
+    style L1 fill:#e8f5e9,color:#000
+    style L2 fill:#fff3e0,color:#000
+    style L3 fill:#ffebee,color:#000
 ```
 
 ## 📊 Data Flow Architecture
@@ -287,10 +287,10 @@ flowchart TB
     RU --> RC
     RC --> R
     
-    style WPG fill:#e8f5e9
-    style RPG fill:#e8f5e9
-    style WR fill:#ffebee
-    style RC fill:#ffebee
+    style WPG fill:#e8f5e9,color:#000
+    style RPG fill:#e8f5e9,color:#000
+    style WR fill:#ffebee,color:#000
+    style RC fill:#ffebee,color:#000
 ```
 
 ## 📊 Complete System Overview (ASCII)
