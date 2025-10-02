@@ -1,0 +1,47 @@
+server:
+  host: "0.0.0.0"
+  port: 8080
+  read_timeout: "10s"
+  write_timeout: "10s"
+  shutdown_timeout: "30s"
+  mode: "development"
+
+database:
+  host: "localhost"
+  port: 5432
+  user: "aduser"
+  password: "adpass123"
+  database: "addelivery"
+  ssl_mode: "disable"
+  max_open_conns: 25
+  max_idle_conns: 5
+  conn_max_lifetime: "5m"
+
+redis:
+  host: "localhost"
+  port: 6379
+  password: ""
+  db: 0
+  pool_size: 10
+  min_idle_conns: 3
+  dial_timeout: "5s"
+  read_timeout: "3s"
+  write_timeout: "3s"
+
+kafka:
+  brokers:
+    - "localhost:9092"
+  consumer_group: "ad-delivery-simulator"
+  batch_size: 100
+  flush_interval: "1s"
+  max_message_size: 1000000
+  compression: "snappy"
+
+logging:
+  level: "info"
+  format: "json"
+  output: "stdout"
+
+metrics:
+  enabled: true
+  path: "/metrics"

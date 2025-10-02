@@ -1,0 +1,344 @@
+### Ad Delivery Simulator API Examples
+### You can use this file with REST Client extensions in VS Code or IntelliJ
+
+@baseUrl = http://localhost:8080/api/v1
+@contentType = application/json
+
+### Health Check
+GET http://localhost:8080/health
+
+### Metrics Endpoint
+GET http://localhost:8080/metrics
+
+### ============================================
+### CAMPAIGN MANAGEMENT
+### ============================================
+
+### Create a new CPM campaign
+POST {{baseUrl}}/campaigns
+Content-Type: {{contentType}}
+
+{
+  "name": "Holiday Sale CPM Campaign",
+  "advertiser_id": "advertiser-001",
+  "status": "active",
+  "budget_daily": 5000.00,
+  "budget_total": 50000.00,
+  "bid_type": "CPM",
+  "bid_amount": 3.50,
+  "targeting_rules": {
+    "geo_targeting": ["US", "CA", "UK"],
+    "device_types": ["1", "2", "4"],
+    "user_segments": ["tech_enthusiasts", "online_shoppers"],
+    "day_parting": [
+      {
+        "day_of_week": 1,
+        "start_hour": 9,
+        "end_hour": 17
+      }
+    ]
+  },
+  "frequency_capping": {
+    "impression_cap": 20,
+    "click_cap": 5,
+    "time_window": 86400000000000
+  },
+  "start_date": "2024-01-01T00:00:00Z",
+  "end_date": "2024-12-31T23:59:59Z"
+}
+
+### Create a CPC campaign
+POST {{baseUrl}}/campaigns
+Content-Type: {{contentType}}
+
+{
+  "name": "Search Marketing CPC Campaign",
+  "advertiser_id": "advertiser-002",
+  "status": "active",
+  "budget_daily": 1000.00,
+  "budget_total": 30000.00,
+  "bid_type": "CPC",
+  "bid_amount": 0.75,
+  "targeting_rules": {
+    "geo_targeting": ["US"],
+    "device_types": ["1", "2"]
+  },
+  "frequency_capping": {
+    "click_cap": 3,
+    "time_window": 86400000000000
+  },
+  "start_date": "2024-01-01T00:00:00Z"
+}
+
+### Create a CPA campaign
+POST {{baseUrl}}/campaigns
+Content-Type: {{contentType}}
+
+{
+  "name": "Conversion Optimized CPA Campaign",
+  "advertiser_id": "advertiser-003",
+  "status": "active",
+  "budget_daily": 2000.00,
+  "budget_total": 60000.00,
+  "bid_type": "CPA",
+  "bid_amount": 25.00,
+  "targeting_rules": {
+    "geo_targeting": ["US", "CA"],
+    "device_types": ["1"],
+    "user_segments": ["high_value_customers"]
+  },
+  "start_date": "2024-01-01T00:00:00Z"
+}
+
+### Get all active campaigns
+GET {{baseUrl}}/campaigns
+
+### Get specific campaign (replace with actual UUID)
+GET {{baseUrl}}/campaigns/123e4567-e89b-12d3-a456-426614174000
+
+### Update campaign (replace with actual UUID)
+PUT {{baseUrl}}/campaigns/123e4567-e89b-12d3-a456-426614174000
+Content-Type: {{contentType}}
+
+{
+  "name": "Updated Campaign Name",
+  "status": "paused",
+  "budget_daily": 3000.00,
+  "bid_amount": 4.00
+}
+
+### Get campaign performance (replace with actual UUID)
+GET {{baseUrl}}/campaigns/123e4567-e89b-12d3-a456-426614174000/performance?date=2024-01-15
+
+### Get campaign event stats (replace with actual UUID)
+GET {{baseUrl}}/campaigns/123e4567-e89b-12d3-a456-426614174000/stats?start=2024-01-01T00:00:00Z&end=2024-01-31T23:59:59Z
+
+### Get real-time metrics (replace with actual UUID)
+GET {{baseUrl}}/campaigns/123e4567-e89b-12d3-a456-426614174000/metrics
+
+### ============================================
+### REAL-TIME BIDDING
+### ============================================
+
+### Standard bid request
+POST {{baseUrl}}/bid-request
+Content-Type: {{contentType}}
+
+{
+  "id": "bid-request-001",
+  "imp": [
+    {
+      "id": "impression-001",
+      "banner": {
+        "w": 300,
+        "h": 250,
+        "format": [
+          {"w": 300, "h": 250},
+          {"w": 728, "h": 90}
+        ]
+      },
+      "bidfloor": 1.00,
+      "bidfloorcur": "USD"
+    }
+  ],
+  "site": {
+    "id": "site-123",
+    "domain": "example.com",
+    "cat": ["IAB1", "IAB2"],
+    "page": "https://example.com/article",
+    "publisher": {
+      "id": "pub-456",
+      "name": "Example Publisher"
+    }
+  },
+  "device": {
+    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
+    "ip": "192.168.1.1",
+    "devicetype": 2,
+    "make": "Apple",
+    "model": "MacBook Pro",
+    "os": "macOS",
+    "osv": "10.15.7",
+    "language": "en",
+    "geo": {
+      "country": "US",
+      "region": "CA",
+      "city": "San Francisco",
+      "zip": "94105",
+      "type": 2
+    }
+  },
+  "user": {
+    "id": "user-789",
+    "buyeruid": "buyer-user-789",
+    "yob": 1990,
+    "gender": "M"
+  },
+  "at": 2,
+  "tmax": 100,
+  "cur": ["USD"]
+}
+
+### Mobile bid request
+POST {{baseUrl}}/bid-request
+Content-Type: {{contentType}}
+
+{
+  "id": "mobile-bid-001",
+  "imp": [
+    {
+      "id": "mobile-imp-001",
+      "banner": {
+        "w": 320,
+        "h": 50,
+        "pos": 1
+      },
+      "bidfloor": 0.50
+    }
+  ],
+  "app": {
+    "id": "app-456",
+    "name": "Mobile Game",
+    "bundle": "com.example.game",
+    "cat": ["IAB9"],
+    "ver": "2.1.0",
+    "publisher": {
+      "id": "mobile-pub-123",
+      "name": "Mobile Publisher Inc"
+    }
+  },
+  "device": {
+    "ua": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X)",
+    "ip": "192.168.1.2",
+    "devicetype": 1,
+    "make": "Apple",
+    "model": "iPhone 12",
+    "os": "iOS",
+    "osv": "14.0",
+    "ifa": "AEBE52E7-03EE-455A-B3C4-E57283966239",
+    "geo": {
+      "country": "US",
+      "city": "New York",
+      "zip": "10001"
+    }
+  },
+  "user": {
+    "id": "mobile-user-123"
+  },
+  "at": 2,
+  "cur": ["USD"]
+}
+
+### Video bid request
+POST {{baseUrl}}/bid-request
+Content-Type: {{contentType}}
+
+{
+  "id": "video-bid-001",
+  "imp": [
+    {
+      "id": "video-imp-001",
+      "video": {
+        "mimes": ["video/mp4", "video/webm"],
+        "minduration": 5,
+        "maxduration": 30,
+        "protocols": [2, 3],
+        "w": 640,
+        "h": 480,
+        "startdelay": 0,
+        "linearity": 1,
+        "skip": 1,
+        "skipmin": 5,
+        "skipafter": 5
+      },
+      "bidfloor": 5.00
+    }
+  ],
+  "site": {
+    "id": "video-site-789",
+    "domain": "video-platform.com",
+    "cat": ["IAB1"]
+  },
+  "device": {
+    "devicetype": 2,
+    "geo": {
+      "country": "US"
+    }
+  },
+  "user": {
+    "id": "video-user-456"
+  }
+}
+
+### ============================================
+### TRACKING EVENTS
+### ============================================
+
+### Track impression
+POST {{baseUrl}}/track/impression
+Content-Type: {{contentType}}
+
+{
+  "campaign_id": "123e4567-e89b-12d3-a456-426614174000",
+  "creative_id": "creative-001",
+  "user_id": "user-123",
+  "session_id": "session-456"
+}
+
+### Track click
+POST {{baseUrl}}/track/click
+Content-Type: {{contentType}}
+
+{
+  "campaign_id": "123e4567-e89b-12d3-a456-426614174000",
+  "creative_id": "creative-001",
+  "user_id": "user-123",
+  "session_id": "session-456"
+}
+
+### Track conversion
+POST {{baseUrl}}/track/conversion
+Content-Type: {{contentType}}
+
+{
+  "campaign_id": "123e4567-e89b-12d3-a456-426614174000",
+  "user_id": "user-123",
+  "value": 99.99,
+  "session_id": "session-456"
+}
+
+### ============================================
+### TESTING SCENARIOS
+### ============================================
+
+### Test rate limiting (send multiple requests quickly)
+POST {{baseUrl}}/bid-request
+Content-Type: {{contentType}}
+
+{
+  "id": "rate-test-001",
+  "imp": [{"id": "imp-1", "bidfloor": 1.0}],
+  "device": {"devicetype": 1}
+}
+
+### Test with missing required fields (should return error)
+POST {{baseUrl}}/bid-request
+Content-Type: {{contentType}}
+
+{
+  "imp": [{"id": "imp-1"}]
+}
+
+### Test campaign with exhausted budget
+POST {{baseUrl}}/campaigns
+Content-Type: {{contentType}}
+
+{
+  "name": "Low Budget Campaign",
+  "advertiser_id": "test-advertiser",
+  "budget_daily": 0.01,
+  "budget_total": 0.01,
+  "bid_type": "CPM",
+  "bid_amount": 1.00,
+  "start_date": "2024-01-01T00:00:00Z"
+}
