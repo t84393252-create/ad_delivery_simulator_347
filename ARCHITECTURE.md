@@ -1,6 +1,299 @@
 # System Architecture & Flow Diagrams
 
-## 📊 Complete System Overview
+## 📊 Complete System Overview (Mermaid)
+
+```mermaid
+graph TB
+    subgraph "External Clients"
+        P[Publishers]
+        A[Advertisers]
+        AN[Analytics]
+        M[Monitoring]
+    end
+    
+    subgraph "API Gateway"
+        LB[Load Balancer]
+        GIN[Gin HTTP Router]
+    end
+    
+    subgraph "Business Logic"
+        AE[Auction Engine]
+        CS[Campaign Service]
+        TS[Tracking Service]
+        AS[Analytics Service]
+    end
+    
+    subgraph "Data Layer"
+        R[(Redis<br/>Cache)]
+        K[Kafka<br/>Streams]
+        PG[(PostgreSQL<br/>Database)]
+    end
+    
+    P -->|Bid Requests| LB
+    A -->|Campaign Mgmt| LB
+    AN -->|Get Metrics| LB
+    M -->|Health Checks| LB
+    
+    LB --> GIN
+    
+    GIN -->|/bid-request| AE
+    GIN -->|/campaigns| CS
+    GIN -->|/track| TS
+    GIN -->|/metrics| AS
+    
+    AE --> R
+    AE --> K
+    AE --> CS
+    
+    CS --> R
+    CS --> PG
+    CS --> K
+    
+    TS --> R
+    TS --> K
+    TS --> PG
+    
+    AS --> R
+    AS --> PG
+    
+    style P fill:#e1f5fe
+    style A fill:#e1f5fe
+    style AN fill:#e1f5fe
+    style M fill:#e1f5fe
+    style AE fill:#fff3e0
+    style CS fill:#fff3e0
+    style TS fill:#fff3e0
+    style AS fill:#fff3e0
+    style R fill:#ffebee
+    style K fill:#f3e5f5
+    style PG fill:#e8f5e9
+```
+
+## 🔄 Bid Request Sequence Diagram
+
+```mermaid
+sequenceDiagram
+    participant P as Publisher
+    participant API as API Gateway
+    participant AE as Auction Engine
+    participant CS as Campaign Service
+    participant R as Redis
+    participant K as Kafka
+    
+    P->>API: Bid Request
+    API->>AE: Route to Auction
+    
+    AE->>CS: Fetch Active Campaigns
+    CS->>R: Check Budgets
+    R-->>CS: Budget Status
+    CS-->>AE: Eligible Campaigns
+    
+    AE->>AE: Evaluate Targeting
+    AE->>R: Check Frequency Caps
+    R-->>AE: Cap Status
+    
+    AE->>AE: Calculate Bids
+    AE->>AE: Run Auction<br/>(Second Price)
+    
+    AE->>R: Decrement Budget
+    AE->>K: Log Event
+    
+    AE-->>API: Winning Ad
+    API-->>P: Ad Response
+    
+    Note over K: Async Processing
+    K->>K: Analytics
+    K->>K: Reporting
+    K->>K: Billing
+```
+
+## 📈 Event Processing Flow
+
+```mermaid
+flowchart LR
+    subgraph "Event Source"
+        U[User Action]
+    end
+    
+    subgraph "API Layer"
+        E[Event Endpoint]
+        V[Validation]
+    end
+    
+    subgraph "Processing"
+        B[Buffer]
+        BP[Batch<br/>Processor]
+    end
+    
+    subgraph "Storage"
+        RC[Redis<br/>Counter]
+        KQ[Kafka<br/>Queue]
+        PG[(PostgreSQL)]
+    end
+    
+    subgraph "Consumers"
+        RT[Real-time<br/>Metrics]
+        AN[Analytics<br/>Pipeline]
+        RP[Reports]
+    end
+    
+    U -->|Click/Impression| E
+    E --> V
+    V --> B
+    V --> RC
+    V --> KQ
+    
+    B -->|100 events| BP
+    BP --> PG
+    
+    RC --> RT
+    KQ --> AN
+    KQ --> RP
+    
+    style U fill:#e3f2fd
+    style RC fill:#ffebee
+    style KQ fill:#f3e5f5
+    style PG fill:#e8f5e9
+```
+
+## 💰 Campaign Lifecycle
+
+```mermaid
+stateDiagram-v2
+    [*] --> Draft: Create Campaign
+    Draft --> Active: Start Date Reached
+    Draft --> Cancelled: Cancel
+    
+    Active --> Paused: Pause
+    Active --> Completed: End Date Reached
+    Active --> Exhausted: Budget Depleted
+    
+    Paused --> Active: Resume
+    Paused --> Cancelled: Cancel
+    
+    Exhausted --> Active: Budget Added
+    Exhausted --> Completed: End Date
+    
+    Completed --> [*]
+    Cancelled --> [*]
+    
+    note right of Active
+        Real-time bidding
+        Budget tracking
+        Performance monitoring
+    end note
+    
+    note right of Exhausted
+        No bidding
+        Awaiting budget
+    end note
+```
+
+## 🏗️ Component Interaction Matrix
+
+```mermaid
+graph LR
+    subgraph "Synchronous Calls"
+        AE1[Auction Engine]
+        CS1[Campaign Service]
+        AE1 -.->|HTTP/gRPC| CS1
+    end
+    
+    subgraph "Async Events"
+        AE2[Auction Engine]
+        K2[Kafka]
+        AN2[Analytics]
+        AE2 -->|Publish| K2
+        K2 -->|Subscribe| AN2
+    end
+    
+    subgraph "Direct Access"
+        CS3[Campaign Service]
+        R3[Redis]
+        PG3[PostgreSQL]
+        CS3 -->|Read/Write| R3
+        CS3 -->|Read/Write| PG3
+    end
+```
+
+## 🚦 Performance Architecture
+
+```mermaid
+graph TD
+    subgraph "Caching Layers"
+        L1[L1: In-Memory<br/>< 1μs]
+        L2[L2: Redis<br/>< 1ms]
+        L3[L3: PostgreSQL<br/>< 10ms]
+    end
+    
+    subgraph "Concurrency"
+        WP[Worker Pool<br/>100 goroutines]
+        CH[Channels<br/>10k buffer]
+        BP[Batch Size<br/>100 records]
+    end
+    
+    subgraph "Protection"
+        RL[Rate Limiter<br/>1000 RPS]
+        CB[Circuit Breaker<br/>50% error rate]
+        RT[Retry Logic<br/>3 attempts]
+    end
+    
+    L1 --> L2
+    L2 --> L3
+    
+    WP --> CH
+    CH --> BP
+    
+    RL --> CB
+    CB --> RT
+    
+    style L1 fill:#e8f5e9
+    style L2 fill:#fff3e0
+    style L3 fill:#ffebee
+```
+
+## 📊 Data Flow Architecture
+
+```mermaid
+flowchart TB
+    subgraph "Write Path"
+        W[Write Request]
+        WV[Validation]
+        WT[Transaction]
+        WPG[(PostgreSQL)]
+        WR[Redis Update]
+        WK[Kafka Event]
+    end
+    
+    subgraph "Read Path"
+        R[Read Request]
+        RC[Redis Cache]
+        RM[Cache Miss]
+        RPG[(PostgreSQL)]
+        RU[Cache Update]
+    end
+    
+    W --> WV
+    WV --> WT
+    WT --> WPG
+    WT --> WR
+    WT --> WK
+    
+    R --> RC
+    RC -->|Hit| R
+    RC -->|Miss| RM
+    RM --> RPG
+    RPG --> RU
+    RU --> RC
+    RC --> R
+    
+    style WPG fill:#e8f5e9
+    style RPG fill:#e8f5e9
+    style WR fill:#ffebee
+    style RC fill:#ffebee
+```
+
+## 📊 Complete System Overview (ASCII)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────┐
