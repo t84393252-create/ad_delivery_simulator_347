@@ -15,7 +15,7 @@ This production-ready Ad Delivery Simulator implements the core components of a 
 - 🔧 **Built with Go**: Clean, maintainable codebase using industry-standard technologies
 
 <details open>
-<summary><h2>📚 Table of Contents</h2></summary>
+<summary><strong>📚 Table of Contents</strong></summary>
 
 - [🌍 Problem Context](#-problem-context)
   - [🎯 The Digital Advertising Challenge](#-the-digital-advertising-challenge)
