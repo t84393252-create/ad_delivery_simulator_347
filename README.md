@@ -2,6 +2,49 @@
 
 A comprehensive ad delivery microservice demonstrating real-time bidding (RTB), campaign management, and performance tracking. Built with Go, Redis, Kafka, and PostgreSQL.
 
+## Problem Context
+
+### The Digital Advertising Challenge
+
+Modern digital advertising operates at massive scale with billions of ad requests processed daily across the internet. Publishers need to monetize their content, advertisers want to reach their target audience efficiently, and users expect relevant, non-intrusive ads. This creates several technical challenges:
+
+1. **Real-Time Decision Making**: Ad auctions must complete in under 100 milliseconds to avoid impacting page load times
+2. **Budget Management**: Campaigns need precise budget control to prevent overspending while maximizing reach
+3. **Targeting Precision**: Ads must reach the right audience based on multiple criteria (geography, device, behavior)
+4. **Scale and Performance**: Systems must handle thousands of requests per second with high availability
+5. **Fraud Prevention**: Invalid traffic and click fraud can waste advertising budgets
+6. **Privacy Compliance**: Modern regulations require careful handling of user data
+
+### What This Service Solves
+
+This Ad Delivery Simulator provides a production-ready solution for the core components of an advertising platform:
+
+#### For Publishers
+- **Maximized Revenue**: Second-price auctions ensure fair market value for ad inventory
+- **Fill Rate Optimization**: Multiple advertisers compete for each impression
+- **Quality Control**: Frequency capping prevents user fatigue from repetitive ads
+
+#### For Advertisers  
+- **Budget Control**: Real-time budget tracking prevents overspending
+- **Campaign Pacing**: Algorithms distribute budget evenly throughout the day
+- **Precise Targeting**: Reach specific audiences based on geography, device type, and user segments
+- **Performance Tracking**: Real-time metrics for impressions, clicks, and conversions
+
+#### For Engineers
+- **Scalable Architecture**: Event-driven design with Kafka handles growth
+- **Low Latency**: Redis caching and optimized auction logic ensure sub-100ms responses
+- **High Throughput**: Batch processing and async operations handle 1000+ RPS
+- **Observable System**: Prometheus metrics and structured logging for monitoring
+
+### Real-World Applications
+
+This system architecture is used by:
+- **Ad Exchanges**: Connecting publishers and advertisers in real-time
+- **Demand-Side Platforms (DSPs)**: Managing advertiser campaigns programmatically  
+- **Supply-Side Platforms (SSPs)**: Optimizing publisher inventory yield
+- **Ad Networks**: Aggregating and selling publisher inventory
+- **Marketing Platforms**: Running performance marketing campaigns
+
 ## Features
 
 - **Real-Time Bidding Engine**: OpenRTB 2.5 compliant bid request/response system
@@ -49,8 +92,8 @@ A comprehensive ad delivery microservice demonstrating real-time bidding (RTB), 
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/ad-delivery-simulator.git
-cd ad-delivery-simulator
+git clone https://github.com/t84393252-create/ad_delivery_simulator_347.git
+cd ad_delivery_simulator_347
 ```
 
 2. Start infrastructure services:
